@@ -1,26 +1,36 @@
 <html>
 <head>
-<title>テトリス</title>
+<title>Tetris</title>
 <style>
 body {
     background-color: white;
     margin: 0 auto;
     padding: 0;
 }
+.container {
+    position: relative;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
 .field {
     margin: 24px 0;
     border: 1px solid white;
     text-align: center;
     color: white;
-    font-family: monospace;
-    font-size: 44px;
-    line-height: 22px;;
+}
+.next-indicator {
+    position: absolute;
+    top: 0;
+    left: calc(50% + 192px);
+    text-align: center;
 }
 .block {
     display: inline-block;
     width: 32px;
     height: 32px;
     border: 1px solid #333;
+    background-color: white;
 }
 .block0 {
     background-color: black;
@@ -46,10 +56,17 @@ body {
 .block7 {
     background-color: purple;
 }
+.blockW {
+    background-color: white;
+    border-color: white;
+}
 </style>
 </head>
 <body>
+<div class="container">
 <div class="field" id="field"></div>
+<div class="next-indicator" id="indicator"></div>
+</div>
 <script>
 const HEIGHT = 20;
 const WIDTH = 10;
@@ -400,6 +417,26 @@ function printField(display) {
         html += '<br>';
     }
     document.getElementById('field').innerHTML = html;
+    document.getElementById('indicator').innerHTML = makeNextIndicatorHtml();
+}
+
+function makeNextIndicatorHtml() {
+    switch (nextBlock.type) {
+    case 1:
+        return `<span class="block block1"></span><span class="block block1"></span><span class="block block1"></span><span class="block block1"></span>`;
+    case 2:
+        return `<span class="block block2"></span><span class="block block2"></span><br><span class="block block2"></span><span class="block block2"></span>`;
+    case 3:
+        return `<span class="block blockW"></span><span class="block block3"></span><span class="block block3"></span><br><span class="block block3"></span><span class="block block3"></span><span class="block blockW">`;
+    case 4:
+        return `<span class="block block4"></span><span class="block block4"></span><span class="block blockW"></span><br><span class="block blockW"></span><span class="block block4"></span><span class="block block4"></span>`;
+    case 5:
+        return `<span class="block block5"></span><span class="block blockW"></span><span class="block blockW"></span><br><span class="block block5"></span><span class="block block5"></span><span class="block block5"></span>`;
+    case 6:
+        return `<span class="block blockW"></span><span class="block blockW"></span><span class="block block6"></span><br><span class="block block6"></span><span class="block block6"></span><span class="block block6"></span>`;
+    case 7:
+        return `<span class="block blockW"></span><span class="block block7"></span><span class="block blockW"></span><br><span class="block block7"></span><span class="block block7"></span><span class="block block7"></span>`;
+    }
 }
 
 function onKeyDown(ev) {
