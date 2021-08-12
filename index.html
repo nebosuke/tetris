@@ -71,25 +71,29 @@ body {
 const HEIGHT = 20;
 const WIDTH = 10;
 
-let field = new Array(HEIGHT)
-for (let h = 0; h < HEIGHT; h++) {
-    field[h] = new Array(WIDTH);
-    for (let w = 0; w < WIDTH; w++) {
-        field[h][w] = 0;
+function initField() {
+    let field = new Array(HEIGHT)
+    for (let h = 0; h < HEIGHT; h++) {
+        field[h] = new Array(WIDTH);
+        for (let w = 0; w < WIDTH; w++) {
+            field[h][w] = 0;
+        }
     }
+    return field;
 }
-
-let dropping = makeNextBlock();
-let nextBlock = makeNextBlock();
 
 function makeNextBlock() {
     return {
-        'x': 3,
+        'x': 4,
         'y': 0,
-        'type': Math.floor(Math.random() * 8),
+        'type': Math.floor(Math.random() * 7) + 1,
         'rotation': 0
     }
 }
+
+let field = initField();
+let dropping = makeNextBlock();
+let nextBlock = makeNextBlock();
 
 // 現在のブロックに落ちている途中のブロックを上書きで描画する
 // 結果が可能な場合はtrue
@@ -535,9 +539,16 @@ function onDrop() {
     const display = JSON.parse(JSON.stringify(field));
     overlayDropping(display);
     field = JSON.parse(JSON.stringify(display));
-    printField(display);
+    printField(field);
     dropping = nextBlock;
     nextBlock = makeNextBlock();
+    if (isGameOver(field)) {
+        alert('Game Over');
+        field = initField();
+        dropping = makeNextBlock();
+        nextBlock = makeNextBlock();
+        return;
+    }
     setTimeout(scanLines, 100);
 }
 
@@ -564,6 +575,11 @@ function scanLines() {
         nextField.unshift(line);
     }
     field = nextField;
+}
+
+function isGameOver(field) {
+    const top = field[0];
+    return top[2] > 0 || top[3] > 0 || top[4] > 0 || top[5] > 0;
 }
 
 document.addEventListener('keydown', onKeyDown);
